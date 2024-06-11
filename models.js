@@ -15,43 +15,42 @@ User.init({
   tableName: 'users'
 });
 
-export class UserCommits extends Model {}
+export class UserPullRequests extends Model {}
 
-UserCommits.init({
-  commitId: {
+UserPullRequests.init({
+  pullRequestId: {
     type: DataTypes.INTEGER,
     primaryKey: true
   },
   userId: {
     type: DataTypes.INTEGER,
-    references: {
-      model: User,
-      key: 'userId'
-    },
-    onDelete: 'CASCADE'
   }
 }, {
   sequelize,
-  modelName: 'UserCommits',
-  tableName: 'user_commits'
+  modelName: 'UserPullRequests',
+  tableName: 'user_pull_requests'
 });
 
-export class CommitMetrics extends Model {}
+User.hasMany(UserPullRequests, { foreignKey: 'userId' })
+UserPullRequests.belongsTo(User, { foreignKey: 'userId' })
 
-CommitMetrics.init({
-  commitId: {
+export class PullRequestMetrics extends Model {}
+
+PullRequestMetrics.init({
+  metricId: {
     type: DataTypes.INTEGER,
-    primaryKey: true,
-    references: {
-      model: UserCommits,
-      key: 'commitId'
-    },
-    onDelete: 'CASCADE'
+	autoIncrement: true,
+	primaryKey: true
   },
-  allocatedMemory: DataTypes.INTEGER
+  pullRequestId: DataTypes.INTEGER,
+  allocatedMemory: DataTypes.BIGINT
 }, {
   sequelize,
-  modelName: 'CommitMetrics',
-  tableName: 'commit_metrics'
+  modelName: 'PullRequestMetrics',
+  tableName: 'pull_request_metrics'
 });
 
+PullRequestMetrics.belongsTo(UserPullRequests, { foreignKey: 'pullRequestId' })
+UserPullRequests.hasMany(PullRequestMetrics, { foreignKey: 'pullRequestId' })
+
+sequelize.sync()

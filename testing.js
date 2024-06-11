@@ -1,6 +1,5 @@
-import { addUser, getUser, addCommit, addMetrics, getCommit, getSimilarMetrics } from "./repositories.js"; 
+import { addUser, addPullRequest, addMetrics, getSimilarMetrics } from "./repositories.js"; 
 
 
-
-await getSimilarMetrics(1)
+console.log(await getSimilarMetrics(1, 1))
 
